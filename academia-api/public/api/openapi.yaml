@@ -1,0 +1,32 @@
+openapi: '3.0.1'
+info:
+  title: Academia
+  description: Este serviço implementa uma forma mais acessível para os 
+    usuários conseguirem acessar suas atividades, é uma aplicação em que o 
+    professor de educação física vai escrever os treinos que o usuário irá 
+    fazer, possivelmente acompanhados de imagens ou vídeos. Usuários podem ver,
+    seguir, comentar sobre o que estão achando dos treinos.
+  version: '1.1'
+servers:
+  - url: http://{host}:{porta}/api
+    variables:
+      host:
+        default: localhost
+      porta:
+        default: '8000'
+paths:
+  /publicacoes:
+    get:
+      operationId: getTreino
+      summary: Acessar treino
+      responses:
+        '200':
+          description: OK
+          content: 
+            application/json:
+              schema:
+                type: string
+                minItems: 0
+                items:
+                  $ref: ''
+                
