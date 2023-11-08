@@ -1,11 +1,10 @@
 openapi: '3.0.1'
 info:
   title: Academia
-  description: Este serviço implementa uma forma mais acessível para os 
-    usuários conseguirem acessar suas atividades, é uma aplicação em que o 
-    professor de educação física vai escrever os treinos que o usuário irá 
-    fazer, possivelmente acompanhados de imagens ou vídeos. Usuários podem ver,
-    seguir, comentar sobre o que estão achando dos treinos.
+  description: Este serviço implementa uma forma mais acessível para os usuários
+   conseguirem acessar suas atividades, é uma aplicação em que o professor de educação física
+   vai escrever os treinos que o usuário irá fazer, possivelmente acompanhados de imagens ou vídeos.
+   Usuários podem ver,seguir, comentar sobre o que estão achando dos treinos.
   version: '1.1'
 servers:
   - url: http://{host}:{porta}/api
@@ -15,18 +14,251 @@ servers:
       porta:
         default: '8000'
 paths:
-  /publicacoes:
+  /users:
     get:
-      operationId: getTreino
-      summary: Acessar treino
+      operationId: getUsers
+      summary: Listar usuários
       responses:
         '200':
           description: OK
-          content: 
+          content:
             application/json:
               schema:
-                type: string
-                minItems: 0
+                type: array
                 items:
-                  $ref: ''
-                
+                  $ref: '#/components/schemas/user'
+
+
+  /user/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+
+    get:
+      operationId: getUser
+      summary: Obter usuário por ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '404':
+          description: Usuário não encontrado.
+
+
+    put:
+      summary: Atualizar usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '200':
+          description: Usuário atualizado
+        '404':
+          description: Usuário não encontrado.
+
+
+    delete:
+      summary: Excluir usuário
+      responses:
+        '200':
+          description: Usuário excluído
+        '404':
+          description: Usuário não encontrado.
+
+
+
+
+
+
+  /alunos:
+    get:
+      operationId: getAlunos
+      summary: Listar alunos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/aluno'
+
+
+  /aluno/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+
+    get:
+      operationId: getAluno
+      summary: Obter aluno por ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/aluno'
+        '404':
+          description: Aluno não encontrado.
+
+
+    post:
+      summary: Criar aluno
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/aluno'
+      responses:
+        '201':
+          description: Aluno criado
+
+
+    put:
+      summary: Atualizar aluno
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/aluno'
+      responses:
+        '200':
+          description: Aluno atualizado
+        '404':
+          description: Aluno não encontrado.
+
+
+    delete:
+      summary: Excluir aluno
+      responses:
+        '200':
+          description: Aluno excluído
+        '404':
+          description: Aluno não encontrado.
+
+
+  /treinos:
+    get:
+      operationId: getTreinos
+      summary: Listar treinos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/treino'
+
+
+  /treino/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+
+    get:
+      operationId: getTreino
+      summary: Obter treino por ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/treino'
+        '404':
+          description: Treino não encontrado.
+
+
+    post:
+      summary: Criar treino
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/treino'
+      responses:
+        '201':
+          description: Treino criado
+
+
+    put:
+      summary: Atualizar treino
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/treino'
+      responses:
+        '200':
+          description: Treino atualizado
+        '404':
+          description: Treino não encontrado.
+
+
+    delete:
+      summary: Excluir treino
+      responses:
+        '200':
+          description: Treino excluído
+        '404':
+          description: Treino não encontrado.
+
+
+components:
+  schemas:
+    user:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+
+
+    aluno:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+
+
+    treino:
+      type: object
+      properties:
+        id:
+          type: integer
+        descricao:
+          type: string
+
+
+
