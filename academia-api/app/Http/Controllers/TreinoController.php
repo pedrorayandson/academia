@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Treino;
 use Illuminate\Http\Request;
+use App\Models\Aluno;
 
 class TreinoController extends Controller
 {
@@ -34,17 +35,20 @@ class TreinoController extends Controller
             'chest_day' => 'required|string',
             'leg_day' => 'required|string',
             'back_day' => 'required|string',
-            'aluno_id' => 'required|string'
+            'aluno_id' => 'required|integer'
         ]);
+       
+        
 
         Treino::create([
             'chest_day' => $request->post('chest_day'),
             'leg_day' => $request->post('leg_day'),
             'back_day' => $request->post('back_day'),
-            'aluno_id' => $request->post('aluno_id')
+            'aluno_id' => (int) $request->post('aluno_id') 
         ]);
 
-        return response()->setStatusCode(200);
+        return response()->setStatusCode(201);
+
     }
 
     /**
@@ -71,6 +75,18 @@ class TreinoController extends Controller
     public function update(Request $request, $id)
     {
         $treino = Treino::find($id);
+        $alunoExistente = Aluno::find($request->post('aluno_id'));
+
+        if ($alunoExistente === null) {
+            return response()->json(
+                [
+                    'tipo' => 'erro',
+                    'conteudo' => "O aluno com ID {$request->post('aluno_id')} não foi encontrado."
+                ],
+                404
+            );
+        }
+        
         $treino->update([
             'chest_day' => $request->chest_day,
             'leg_day' => $request->leg_day,
@@ -78,7 +94,13 @@ class TreinoController extends Controller
             'aluno_id' => $request->aluno_id
         ]);
 
-        return response()->setStatusCode(200);
+        return response()->json(
+            [
+                'tipo' => 'info',
+                'conteudo' => "Treino Editado."
+            ],
+            201
+        );
     }
 
     /**
@@ -87,8 +109,22 @@ class TreinoController extends Controller
     public function destroy($id)
     {
         $treino = Treino::find($id);
+        if (!$treino) {
+            return response()->json(
+                [
+                    'tipo' => 'erro',
+                    'conteudo' => "Treino $id não encontrada para delete."
+                ],
+                404
+            );
+        }
         $treino->delete();
 
-        return response()->setStatusCode(200);
-    }
+        return response()->json(
+            [
+                'tipo' => 'info',
+                'conteudo' => "Treino deletado."
+            ],
+            201
+        );    }
 }
