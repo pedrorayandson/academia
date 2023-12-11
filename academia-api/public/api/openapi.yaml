@@ -47,6 +47,8 @@ paths:
   /user/create:
     post:
       summary: Criar user
+      security:
+        - bearer: []
       requestBody:
         required: true
         content:
@@ -59,6 +61,8 @@ paths:
   /user/edit/{id}:
     put:
       summary: Atualizar usuário
+      security:
+        - bearer: []
       requestBody:
         required: true
         content:
@@ -73,6 +77,8 @@ paths:
   /user/delete/{id}:
     delete:
       summary: Excluir usuário
+      security:
+        - bearer: []
       responses:
         '200':
           description: Usuário deletado
@@ -118,6 +124,8 @@ paths:
   /aluno/create:
     post:
       summary: Criar aluno
+      security:
+        - bearer: []
       requestBody:
         required: true
         content:
@@ -130,6 +138,8 @@ paths:
   /aluno/edit/{id}:
     put:
       summary: Atualizar aluno
+      security:
+        - bearer: []
       requestBody:
         required: true
         content:
@@ -144,6 +154,8 @@ paths:
   /aluno/delete/{id}:
     delete:
       summary: Excluir aluno
+      security:
+        - bearer: []
       responses:
         '200':
           description: Aluno excluído
@@ -190,37 +202,83 @@ paths:
   /treino/create:
     post:
       summary: Criar treino
+      security:
+        - bearer: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/treino'
+              type: object
+              properties:
+                chest_day:
+                  type: string
+                leg_day:
+                  type: string
+                back_day:
+                  type: string
+                aluno_id:
+                  type: integer
       responses:
         '201':
           description: Treino criado
+        '500':
+          description: Aluno não encontrado
+        
+
   /treino/edit/{id}:
     put:
       summary: Atualizar treino
+      security:
+      - bearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/treino'
+              type: object
+              properties:
+                chest_day:
+                  type: string
+                leg_day:
+                  type: string
+                back_day:
+                  type: string
+                aluno_id:
+                  type: integer
       responses:
-        '201':
-          description: Treino editado
-        '404':
-          description: Treino id não encontrado
+          '201':
+            description: Treino editado
+          '404':
+            description: Treino id não encontrado
+          '500':
+            description: Aluno não encontrado
+
   /treino/delete/{id}:
     delete:
       summary: Excluir treino
+      security:
+        - bearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         '201':
           description: Treino deletado
         '404':
           description: Treino id não encontrada para delete
+
+
+
 
 components:
   schemas:
@@ -267,8 +325,6 @@ components:
     treino:
       type: object
       properties:
-        id:
-          type: integer
         chest_day:
           type: string
         leg_day:
@@ -278,8 +334,13 @@ components:
         aluno_id:
           type: integer
       example:
-        id: 1
         chest_day: "Treino de Peito"
         leg_day: "Treino de Perna"
         back_day: "Treino de Costa"
         aluno_id: 1
+
+  securitySchemes:
+        bearer: 
+          type: http
+          scheme: bearer
+          bearerFormat: JWT

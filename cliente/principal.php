@@ -4,6 +4,7 @@ require 'vendor/autoload.php';
 require 'cliente_academia.php';
 require_once __DIR__ . '/../academia-api/app/Models/Aluno.php';
 require_once __DIR__ . '/../academia-api/app/Models/Treino.php';
+
 use App\Models\Treino;
 use App\Models\Aluno;
 
@@ -28,6 +29,8 @@ const OP_ESCREVER = 'Cadastrar o Treino';
 const OP_EDITAR  = 'Editar Treino';
 const OP_EXCLUIR = 'Excluir o Treino';
 const OP_INVALIDA = 'Operação inválida';
+const OP_EXIBIR_USUARIO = 'Exibir meus dados pessoais';
+
 
 
 
@@ -37,6 +40,8 @@ const OP_INVALIDA = 'Operação inválida';
  * Interface CLI para a Academia.
  */
 class InterfaceAcademia {
+    private array $usuario = [];
+
 
     /**
      * @param ClienteAcademia cliente_academia - Cliente da API da Academia.
@@ -52,10 +57,15 @@ class InterfaceAcademia {
      * Exibe o menu principal em loop.
      */
     public function menuPrincipal() {
+        $this->menuLogin();
+
         do {
             $this->limparTela();
 
             $this->exibirTitulo();
+
+            $this->exibirUsuario();
+
         
             $treinos = $this->cliente_academia->getTreinos();
             $this->exibirTreinos($treinos);
@@ -83,6 +93,9 @@ class InterfaceAcademia {
                     $id = $this->menuExcluirTreino();
                     $resposta = $this->cliente_academia->excluirTreino($id);
                     $this->exibirErroNaResposta($resposta);
+                    break;
+                case OP_EXIBIR_USUARIO:
+                    $this->menuExibirUsuario();
                     break;
             }
         } while ($operacao != OP_SAIR);
@@ -135,6 +148,7 @@ class InterfaceAcademia {
             1 => OP_ESCREVER,
             2 => OP_EDITAR,
             3 => OP_EXCLUIR,
+            4 => OP_EXIBIR_USUARIO,
             0 => OP_SAIR
         ];
         foreach ($operacoes as $i => $op) {
@@ -236,8 +250,42 @@ class InterfaceAcademia {
             'treino' => $novosDados,
         ];
     }
+    /**
+     * Exibe o menu de login.
+     */
+    private function menuLogin() {
+        $this->limparTela();
+        
+        $this->exibirTitulo();
 
+        echo "Faça login para começar.\n\n";
 
+        echo 'Matrícula: ';
+        $usuario = readline();
+
+        echo 'Senha: ';
+        $senha = Seld\CliPrompt\CliPrompt::hiddenPrompt();
+
+        $this->usuario = $this->cliente_academia->login($usuario, $senha);
+    }
+
+    
+    /**
+     * Exibe os dados do usuário logado.
+     */
+    private function exibirUsuario() {
+        echo "{$this->usuario['nome']} ({$this->usuario['matricula']})\n";
+    }
+
+       /**
+     * 
+     */
+    public function menuExibirUsuario() {
+        echo "Nome: {$this->usuario['nome']}\n";
+        echo "Matrícula: {$this->usuario['matricula']}\n";
+        echo "Token SUAP: {$this->usuario['suap_token']}\n";
+        readline("Aperte ENTER para voltar");
+    }
     /**
      * Exibe uma mensagem temporária, que é apagada em seguida.
      */
@@ -268,6 +316,8 @@ class InterfaceAcademia {
     public function tchau() {
         echo "\nObrigado por usar a Academia \n\n";
     }
+    
+   
 }
 
 
@@ -275,6 +325,10 @@ class InterfaceAcademia {
 /* PROGRAMA PRINCIPAL */
 
 
-$cliente_academia = new ClienteAcademia('http://localhost:8000/api/');
+
+$cliente_academia = new ClienteAcademia(
+    'http://localhost:8000/api/',
+    'https://suap.ifrn.edu.br/api/v2/'
+);
 $interface = new InterfaceAcademia($cliente_academia);
 $interface->menuPrincipal();

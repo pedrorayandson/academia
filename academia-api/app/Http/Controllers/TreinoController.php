@@ -38,7 +38,15 @@ class TreinoController extends Controller
             'aluno_id' => 'required|integer'
         ]);
        
-        
+        if (!Aluno::find($request->post('aluno_id'))) {
+            return response()->json(
+                [
+                    'tipo' => 'erro',
+                    'conteudo' => "Aluno não encontrado."
+                ],
+                500
+            );
+        }
 
         Treino::create([
             'chest_day' => $request->post('chest_day'),
@@ -47,7 +55,13 @@ class TreinoController extends Controller
             'aluno_id' => (int) $request->post('aluno_id') 
         ]);
 
-        return response()->setStatusCode(201);
+        return response()->json(
+            [
+                'tipo' => 'info',
+                'conteudo' => "Treino Criado."
+            ],
+            201
+        );
 
     }
 
@@ -75,18 +89,27 @@ class TreinoController extends Controller
     public function update(Request $request, $id)
     {
         $treino = Treino::find($id);
-        $alunoExistente = Aluno::find($request->post('aluno_id'));
 
-        if ($alunoExistente === null) {
+        if (!$treino) {
             return response()->json(
                 [
                     'tipo' => 'erro',
-                    'conteudo' => "O aluno com ID {$request->post('aluno_id')} não foi encontrado."
+                    'conteudo' => "Treino $id não encontrado."
                 ],
                 404
             );
         }
         
+        if (!Aluno::find($request->aluno_id)) {
+            return response()->json(
+                [
+                    'tipo' => 'erro',
+                    'conteudo' => "Aluno não encontrado."
+                ],
+                500
+            );
+        }
+    
         $treino->update([
             'chest_day' => $request->chest_day,
             'leg_day' => $request->leg_day,
