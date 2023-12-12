@@ -45,7 +45,14 @@ class AlunoController extends Controller
             'pago' => true,
         ]);
 
-        return response()->setStatusCode(200);
+        return response()->json(
+            [
+                'tipo' => 'info',
+                'conteudo' => "Aluno Criado."
+            ],
+            201
+        );
+
     }
 
     /**
@@ -55,6 +62,16 @@ class AlunoController extends Controller
     {
         $aluno = Aluno::find($id);
 
+        if (!$aluno) {
+            return response()->json(
+                [
+                    'tipo' => 'erro',
+                    'conteudo' => "Aluno não encontrado."
+                ],
+                404
+            );
+        }
+        
         return response()->json($aluno);
     }
 
@@ -73,6 +90,17 @@ class AlunoController extends Controller
     {
         $aluno = Aluno::find($id);
 
+        if (!$aluno) {
+            return response()->json(
+                [
+                    'tipo' => 'erro',
+                    'conteudo' => "Aluno não encontrado."
+                ],
+                404
+            );
+        }
+        
+
         $aluno->update([
             'nome' => $request->nome,
             'idade' => $request->idade,
@@ -81,7 +109,13 @@ class AlunoController extends Controller
             'pago' => $request->pago,
         ]);
         
-        return response()->setStatusCode(200);
+        return response()->json(
+            [
+                'tipo' => 'info',
+                'conteudo' => "Aluno editado."
+            ],
+            200
+        );
     }
 
     /**
@@ -90,7 +124,25 @@ class AlunoController extends Controller
     public function destroy($id)
     {
         $aluno = Aluno::find($id);
+
+        if (!$aluno) {
+            return response()->json(
+                [
+                    'tipo' => 'erro',
+                    'conteudo' => "Aluno não encontrado.."
+                ],
+                404
+            );
+        }
+
         $aluno->delete();
-        return response()->setStatusCode(200);
+        
+        return response()->json(
+            [
+                'tipo' => 'info',
+                'conteudo' => "Aluno excluído."
+            ],
+            200
+        ); 
     }
 }

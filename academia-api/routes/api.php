@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\TreinoController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\VerificaTokenSUAP;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,11 +28,11 @@ Route::get('/users', [UserController::class, 'index']);
 
 Route::get('/user/{id}', [UserController::class, 'show']);
 
-Route::post('/user/create', [UserController::class, 'store']);
+Route::post('/user/create', [UserController::class, 'store'])->middleware(VerificaTokenSUAP::class);
 
-Route::put('/user/edit/{id}', [UserController::class, 'update']);
+Route::put('/user/edit/{id}', [UserController::class, 'update'])->middleware(VerificaTokenSUAP::class);
 
-Route::delete('/user/delete/{id}', [UserController::class, 'destroy']);
+Route::delete('/user/delete/{id}', [UserController::class, 'destroy'])->middleware(VerificaTokenSUAP::class);
 
 //Aluno
 
@@ -39,11 +40,11 @@ Route::get('/alunos', [AlunoController::class, 'index']);
 
 Route::get('/aluno/{id}', [AlunoController::class, 'show']);
 
-Route::post('/aluno/create', [AlunoController::class, 'store']);
+Route::post('/aluno/create', [AlunoController::class, 'store'])->middleware(VerificaTokenSUAP::class);
 
-Route::put('/aluno/edit/{id}', [AlunoController::class, 'update']);
+Route::put('/aluno/edit/{id}', [AlunoController::class, 'update'])->middleware(VerificaTokenSUAP::class);
 
-Route::delete('/aluno/delete/{id}', [AlunoController::class, 'destroy']);
+Route::delete('/aluno/delete/{id}', [AlunoController::class, 'destroy'])->middleware(VerificaTokenSUAP::class);
 
 //Treinos
 
@@ -51,8 +52,8 @@ Route::get('/treinos', [TreinoController::class, 'index']);
 
 Route::get('/treino/{id}', [TreinoController::class, 'show']);
 
-Route::post('/treino/create', [TreinoController::class, 'store']);
+Route::post('/treino/create', [TreinoController::class, 'store'])->middleware(VerificaTokenSUAP::class);
 
-Route::put('/treino/edit/{id}', [TreinoController::class, 'update']);
+Route::put('/treino/edit/{id}', [TreinoController::class, 'update'])->middleware(VerificaTokenSUAP::class);
 
-Route::delete('/treino/delete/{id}', [TreinoController::class, 'destroy']);
+Route::delete('/treino/delete/{id}', [TreinoController::class, 'destroy'])->middleware(VerificaTokenSUAP::class);

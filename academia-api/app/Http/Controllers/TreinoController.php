@@ -71,7 +71,15 @@ class TreinoController extends Controller
     public function show($id)
     {
         $treino = Treino::find($id);
-        
+        if (!$treino) {
+            return response()->json(
+                [
+                    'tipo' => 'erro',
+                    'conteudo' => "Treino não encontrado."
+                ],
+                404
+            );
+        }
         return response()->json($treino, 200);
     }
 
@@ -122,7 +130,7 @@ class TreinoController extends Controller
                 'tipo' => 'info',
                 'conteudo' => "Treino Editado."
             ],
-            201
+            200
         );
     }
 
@@ -148,6 +156,7 @@ class TreinoController extends Controller
                 'tipo' => 'info',
                 'conteudo' => "Treino deletado."
             ],
-            201
-        );    }
+            200
+        );    
+    }
 }

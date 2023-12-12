@@ -44,7 +44,13 @@ class UserController extends Controller
             'password' => Hash::make($request->post('password'))
         ]);
 
-        return response()->setStatusCode(200);
+        return response()->json(
+            [
+                'tipo' => 'info',
+                'conteudo' => "User Criado."
+            ],
+            201
+        );
     }
 
     /**
@@ -54,6 +60,16 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
+        if (!$user) {
+            return response()->json(
+                [
+                    'tipo' => 'erro',
+                    'conteudo' => "Usuario não encontrado."
+                ],
+                404
+            );
+        }
+        
         return response()->json($user, 200);
     }
 
@@ -72,13 +88,29 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
+        if (!$user) {
+            return response()->json(
+                [
+                    'tipo' => 'erro',
+                    'conteudo' => "Usuario não encontrado."
+                ],
+                404
+            );
+        }
+        
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
 
-        return response()->setStatusCode(200);
+        return response()->json(
+            [
+                'tipo' => 'info',
+                'conteudo' => "Usuario editado."
+            ],
+            200
+        );
     }
 
     /**
@@ -87,8 +119,24 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(
+                [
+                    'tipo' => 'erro',
+                    'conteudo' => "Usuário não encontrado."
+                ],
+                404
+            );
+        }
         $user->delete();
 
-        return response()->setStatusCode(200);
+        return response()->json(
+            [
+                'tipo' => 'info',
+                'conteudo' => "Usuário deletado"
+            ],
+            200
+        );
     }
 }

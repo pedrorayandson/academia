@@ -48,7 +48,7 @@ paths:
     post:
       summary: Criar user
       security:
-        - bearer: []
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -57,12 +57,20 @@ paths:
               $ref: '#/components/schemas/user'
       responses:
         '201':
-          description: user criado
+          description: User criado
+        '401':
+          description: Não autorizado
   /user/edit/{id}:
     put:
       summary: Atualizar usuário
       security:
-        - bearer: []
+        - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
       requestBody:
         required: true
         content:
@@ -72,16 +80,26 @@ paths:
       responses:
         '200':
           description: Usuário editado
+        '401':
+          description: Não autorizado
         '404':
           description: Usuário não encontrado.
   /user/delete/{id}:
     delete:
       summary: Excluir usuário
       security:
-        - bearer: []
+        - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           description: Usuário deletado
+        '401':
+          description: Não autorizado
         '404':
           description: Usuário não encontrado.
 
@@ -125,7 +143,7 @@ paths:
     post:
       summary: Criar aluno
       security:
-        - bearer: []
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -135,11 +153,19 @@ paths:
       responses:
         '201':
           description: Aluno criado
+        '401':
+          description: Não autorizado
   /aluno/edit/{id}:
     put:
       summary: Atualizar aluno
       security:
-        - bearer: []
+        - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
       requestBody:
         required: true
         content:
@@ -148,17 +174,27 @@ paths:
               $ref: '#/components/schemas/aluno'
       responses:
         '200':
-          description: Aluno atualizado
+          description: Aluno editado
+        '401':
+          description: Não autorizado
         '404':
           description: Aluno não encontrado.
   /aluno/delete/{id}:
     delete:
       summary: Excluir aluno
       security:
-        - bearer: []
+        - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           description: Aluno excluído
+        '401':
+          description: Não autorizado
         '404':
           description: Aluno não encontrado.
 
@@ -203,25 +239,18 @@ paths:
     post:
       summary: Criar treino
       security:
-        - bearer: []
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                chest_day:
-                  type: string
-                leg_day:
-                  type: string
-                back_day:
-                  type: string
-                aluno_id:
-                  type: integer
+               $ref: '#/components/schemas/treino'
       responses:
         '201':
           description: Treino criado
+        '401':
+          description: Não autorizado
         '500':
           description: Aluno não encontrado
         
@@ -230,7 +259,7 @@ paths:
     put:
       summary: Atualizar treino
       security:
-      - bearer: []
+        - bearerAuth: []
       parameters:
       - name: id
         in: path
@@ -242,19 +271,12 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                chest_day:
-                  type: string
-                leg_day:
-                  type: string
-                back_day:
-                  type: string
-                aluno_id:
-                  type: integer
+               $ref: '#/components/schemas/treino'
       responses:
-          '201':
+          '200':
             description: Treino editado
+          '401':
+            description: Não autorizado
           '404':
             description: Treino id não encontrado
           '500':
@@ -264,7 +286,7 @@ paths:
     delete:
       summary: Excluir treino
       security:
-        - bearer: []
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -272,12 +294,12 @@ paths:
           schema:
             type: integer
       responses:
-        '201':
+        '200':
           description: Treino deletado
+        '401':
+          description: Não autorizado
         '404':
           description: Treino id não encontrada para delete
-
-
 
 
 components:
@@ -285,22 +307,20 @@ components:
     user:
       type: object
       properties:
-        id:
-          type: integer
         name:
           type: string
         email:
           type: string
+        password:
+          type: string
       example:
-        id: 1
         name: "JL LP"
         email: "jl@gmail.com"
+        password: "123123123"
 
     aluno:
       type: object
       properties:
-        id:
-          type: integer
         nome:
           type: string
           maxLength: 45
@@ -315,7 +335,6 @@ components:
         pago:
           type: boolean
       example:
-        id: 1
         nome: "Mateus Silva"
         idade: 25
         peso: 65.5
@@ -338,9 +357,12 @@ components:
         leg_day: "Treino de Perna"
         back_day: "Treino de Costa"
         aluno_id: 1
-
   securitySchemes:
-        bearer: 
-          type: http
-          scheme: bearer
-          bearerFormat: JWT
+    bearerAuth:           
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Precisa estar autenticado
+ 
