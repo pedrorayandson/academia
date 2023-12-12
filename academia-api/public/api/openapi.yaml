@@ -328,18 +328,16 @@ components:
           type: integer
         peso:
           type: number
-          format: float
+          format: decimal
         altura:
           type: number
-          format: float
-        pago:
-          type: boolean
+          format: decimal
       example:
         nome: "Mateus Silva"
         idade: 25
         peso: 65.5
         altura: 1.75
-        pago: true
+
 
     treino:
       type: object

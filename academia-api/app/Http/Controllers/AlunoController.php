@@ -32,16 +32,16 @@ class AlunoController extends Controller
     {
         $request->validate([
             'nome' => 'required|string',
-            'idade' => 'required|integer',
-            'peso' => 'required|float',
-            'altura' => 'required|float',
+            'idade' => 'required',
+            'peso' => 'required',
+            'altura' => 'required',
         ]);
 
         Aluno::create([
             'nome' => $request->post('nome'),
             'idade' => $request->post('idade'),
             'peso' => $request->post('peso'),
-            'altura' => $request('altura'),
+            'altura' => $request->post('altura'),
             'pago' => true,
         ]);
 
@@ -106,7 +106,6 @@ class AlunoController extends Controller
             'idade' => $request->idade,
             'peso' => $request->peso,
             'altura' => $request->altura,
-            'pago' => $request->pago,
         ]);
         
         return response()->json(
